@@ -2,3 +2,27 @@ rm -rf *.git
 ]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git init
 Reinitialized existing Git repository in /stor/home/ts34686/Website/.git/
 ]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git add .
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git commit -m "test"
+[master bd152d5] test
+ Committer: Tanner Smith <ts34686@educcomp03.ccbb.utexas.edu>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git remote add origin https://github.com/tansmith57/Website.ggit
+fatal: remote origin already exists.
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git push -u origin master
+Username for 'https://github.com': tansmith57
+Password for 'https://tansmith57@github.com': 
+remote: Repository not found.
+fatal: repository 'https://github.com/USERNAME/WEBSITE_REPOSITORY.git/' not found
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ 
