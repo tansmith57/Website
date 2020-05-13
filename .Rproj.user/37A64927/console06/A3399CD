@@ -250,3 +250,34 @@ bash: cd: /stor/home/ts34686/Desktop/PROJECT_DIRECTORY_NAME: No such file or dir
 ]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git init #initialize local git respository
 Reinitialized existing Git repository in /stor/home/ts34686/Website/.git/
 ]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git add . #add all files in repository to be uploaded
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git commit -m "first website commit"
+[master ff183e1] first website commit
+ Committer: Tanner Smith <ts34686@educcomp03.ccbb.utexas.edu>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 245 insertions(+)
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git remote add origin https://github.com/USERNAME/WEBSITE_REPPOSITORY.git #re
+fatal: remote origin already exists.
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git push origin master
+Username for 'https://github.com': tansmith57
+Password for 'https://tansmith57@github.com': 
+remote: Repository not found.
+fatal: repository 'https://github.com/USERNAME/WEBSITE_REPOSITORY.git/' not found
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ cd ~/Desktop/PROJECT_DIRECTORY_NAME #if you haven't already
+bash: cd: /stor/home/ts34686/Desktop/PROJECT_DIRECTORY_NAME: No such file or directory
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git init #initialize local git respository
+Reinitialized existing Git repository in /stor/home/ts34686/Website/.git/
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git add . #add all files in repository to be uploaded
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git init #initialize local git respository
+Reinitialized existing Git repository in /stor/home/ts34686/Website/.git/
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git add . #add all files in repository to be uploaded
