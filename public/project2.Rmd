@@ -1,0 +1,284 @@
+---
+title: 'Project 2: Modeling, Testing, and Predicting'
+author: "Tanner Smith (ts34686)"
+date: "5/01/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+library(sandwich); library(lmtest)
+library(dplyr)
+library(ggplot2)
+library(glmnet)
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+  
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  #CALCULATE EXACT AUC
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+  
+  data.frame(acc,sens,spec,ppv,auc)
+}
+```
+
+# Introduction
+
+```{r}
+CO2 <- as.data.frame(CO2)
+head(CO2)
+```
+The dataset chosen for this project is the CO2 dataset which has data recorded from an experiment on cold tolerance on *Echinochloa crus-galli*. There are 5 variables with 84 observations in this dataset. the code chunk above shows the first 6 lines of this dataset which shows the different variables. The plant variable is just a classification that indicates the individual plants tested on. The type variable shows whether the plant originated from Quebec or Mississippi. The treatment variable shows whether the plant recieved the treatment of being nonchilled or chilled. The conc variable shows the amount of ambient carbon dioxide concentration the plant was provided with. The uptake variable shows the carbon dioxide uptake rates considering the ambient carbon dioxide and treatment for the plant. 
+
+# MANOVA and ANOVA
+
+## MANOVA
+```{r}
+man1<-manova(cbind(conc,uptake)~Treatment, data=CO2)
+summary(man1)
+```
+The MANOVA showed significant results which means at least one of conc or uptake differs by the treatment. A univariate ANOVA must be performed to find out which part is significant.
+
+## Univariate ANOVA
+```{r}
+summary.aov(man1)
+```
+Only uptake ended up being significant following the univariate ANOVA. A post-hoc t test on the uptake variable must be performed now.
+
+## Post-hoc t test
+```{r}
+pairwise.t.test(CO2$uptake, CO2$Treatment, p.adj = "none")
+.05/5
+1-.95^5
+```
+Each treatment was found to differ for the uptake. The total number of test ran was 5 test (1 MANOVA, 2 ANOVA, and 2 t tests). This number of test will be used to adjust significance with the bonferroni correction and find the probability for a Type 1 error. The difference for the t tests was found to be significant after adjusting for multiple comparisons throughout this process using the bonferroni correction (.05/5). The probability of a Type I error was found to be 0.2262191.
+
+## Assumptions
+The assumptions for the MANOVA were likely not met because there are so many of them. Overall, this is a random sample with independent observations which is a key assumption in most types of hypothesis testing. There was homogeneity of within-group covariance matrices. There was good equal variance throughout the dataset. 
+
+# Randomization Test
+```{r}
+CO2 %>% group_by(Treatment)%>%summarize(m=mean(uptake))%>%summarize(diff(m))
+
+rand_dist<-vector()
+for(i in 1:5000){
+new<-data.frame(uptake=sample(CO2$uptake),Treatment=CO2$Treatment)
+rand_dist[i]<-mean(new[new$Treatment=="chilled",]$uptake)-
+              mean(new[new$Treatment=="nonchilled",]$uptake)}
+mean(rand_dist>6.859524 | rand_dist< -6.859524)
+{hist(rand_dist,main="",ylab=""); abline(v = c(-6.859524,6.859524),col="red")}
+```
+The null hypothesis for this test is the difference in mean uptake between the chilled and nonchilled plants will be as extreme as the observed model after the randimization test. The alternative hypothesis states that the difference in means would not be as extreme. After the randimization test was ran, the p-value was found to be 0.0042. This means that only a proportion of 0.0042 had mean differences as extreme as the one observed. The null hypothesis is rejected and the difference in means after the randomization test is not as extreme. The graph above illustrates this result very well with the red lines representing the test statistic.
+
+# Linear Regression
+```{r}
+CO2 <- CO2 %>% mutate(conc_c = conc-mean(conc))
+fit<-lm(uptake ~ Treatment+conc_c+Type + Treatment*conc_c + Type*conc_c, data=CO2)
+summary(fit)
+```
+This linear regression was ran predicting the uptake value from the treatment, type, and carbon diopxide concentration (mean centered). This regression was also ran from the interaction between conc and type and conc and treatment. The conc term was meaqn centered to help gain better results. 
+
+## Coefficient Estimates
+This linear regression makes a linear formula:
+Uptake = 36.97 - 6.86(chilled) + 0.03(conc_c) - 12.66(Mississippi) - 0.004 (chilled*conc_c) -0.011(Mississippi*conc_c)
+The intercept, 36.97, is the predicted uptake for a non-chilled plant from Quebec with an average concentration of ambient carbon dioxide. The formula above shows the changes to uptake when considering changes to the factors of the intercept value. If the plant was chilled, a 1 would be placed in the formula anywhere the chilled term is and the uptake would lower by 6.86. If the plant was from Mississippi, a 1 would be placed anywhere the Mississippi term is located and the uptake would lower by 12.66. Any change of the concentration of ambient carbon dioxide away from the average would be multiplied by 0.03 and added to the intercept. the chilled*conc_c and Mississippi*conc_c terms represent the interaction between those variables.
+
+## Plotting the Regression
+```{r}
+ggplot(CO2, aes(x=conc_c, y=uptake,group=Treatment))+geom_point(aes(color=Treatment))+
+  geom_smooth(method="lm",formula=y~x,se=F,fullrange=T,aes(color=Treatment))+
+theme(legend.position=c(.9,.19))
+```
+This plot shows the regression for uptake when considering the ambient concentration of Carbon Dioxide and the type of treatment. 
+
+## Assumptions
+```{r}
+fit<-lm(uptake ~ Treatment+conc_c+Type + Treatment*conc_c + Type*conc_c, data=CO2)
+resids <- fit$residuals
+ggplot()+geom_histogram(aes(resids),bins=12)
+```
+The data looks fairly normal in this linear regression.
+
+```{r}
+fit<-lm(uptake ~ Treatment+conc_c+Type + Treatment*conc_c + Type*conc_c, data=CO2)
+resids <- fit$residuals
+fitvals <- fit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color='red')
+```
+This graph shows homoskedasticity and theres no true pattern which helps confirm there's linearity. The graph in the previous section of the regression also shows linearity. 
+
+## Robust Standard Errors
+```{r}
+fit<-lm(uptake ~ Treatment+conc_c+Type + Treatment*conc_c + Type*conc_c, data=CO2)
+coeftest(fit, vcov = vcovHC(fit))
+```
+The estimates once adding the standard erros are the same as the original model. Every variable still shows significance except the interaction variable between conc_c and treatment. The standard errors between the original model and this model changed very slightly. The model above represents a better representation of the default standard errors in practice.
+
+## Proportion of the Variation
+```{r}
+fit<-lm(uptake ~ Treatment+conc_c+Type + Treatment*conc_c + Type*conc_c, data=CO2)
+summary(fit)$r.sq
+```
+The proportion of the variation in uptake explained by the model is 0.7086153.
+
+# Bootstrapped Standard Errors
+```{r}
+fit <- lm(uptake ~ Treatment+conc_c+Type + Treatment*conc_c + Type*conc_c, data=CO2)
+resids <- fit$residuals 
+fitted <- fit$fitted.values 
+
+resid_resamp <- replicate(5000,{
+    new_resids <- sample(resids,replace=TRUE) 
+    CO2$new_y <- fitted+new_resids 
+    fit1 <- lm(new_y ~ Treatment+conc_c+Type + Treatment*conc_c + Type*conc_c, data=CO2) 
+    coef(fit1) 
+})
+resid_resamp%>%t%>%as.data.frame%>%summarize_all(sd)
+```
+The bootstrapped standard errors are less than original standard errors and robust standard errors. The differences between them aren't very large, but there is still a difference. the largest standard errors, which is the robust standard errors, might be the safest to use in practice.
+
+# Logistic Regression
+## Coefficient Estimates
+```{r}
+CO2 <- CO2 %>% mutate(y=ifelse(Treatment=="chilled",1,0))
+fit2 <- glm(y~uptake+Type, data=CO2, family="binomial")
+exp(coef(fit2))
+```
+The coefficient estimates are shown in the summary code above for the logistic regression model. The estimates were exponentiated to be able to interpret them. The odds of having a chilled treatment if uptake is 0 and the plant is from Quebec is 39.698. Controlling for type, every one additional point of uptake changes the odds by a factor of 0.898. Controlling for uptake, odds of the chilled treatment for the Mississippi plant is 0.236 times the odds of the Quebec plant.  
+
+## Confusion Matrix
+```{r}
+fit2 <- glm(y~ uptake+Type, data=CO2, family="binomial")
+probs<-predict(fit2,type="response") 
+table(predict=as.numeric(probs>.5),truth=CO2$y)%>%addmargins
+(31+28)/84 #accuracy
+28/42 #TPR
+31/42 #TNR
+28/39 #PPV
+```
+A confusion matrix was ran which will help to find certain aspects of the logistic regression. The accuracy is 0.702. The sensitivity is 0.667. The specificity is 0.738. The recall is 0.718. 
+
+## Density of Log-odds
+```{r}
+fit2 <- glm(y~ uptake+Type, data=CO2, family="binomial")
+CO2$logit<-predict(fit2,type="link")
+
+CO2%>%ggplot()+geom_density(aes(logit,color=Treatment,fill=Treatment), alpha=.4)+
+  theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab("logit (log-odds)")+
+  geom_rug(aes(logit,color=Treatment))+
+  geom_text(x=-1,y=.3,label="TN")+
+  geom_text(x=-.5,y=.1,label="FN")+
+  geom_text(x=.5,y=.1,label="FP")+
+  geom_text(x=.5,y=.3,label="TP")
+```
+
+## ROC Curve & AUC
+```{r}
+library(plotROC)
+fit2 <- glm(y~uptake+Type, data=CO2, family="binomial")
+prob<-predict(fit2,type="response")
+ROCplot<-ggplot(CO2)+geom_roc(aes(d=y,m=prob), n.cuts=0)+
+  geom_segment(aes(x=0,xend=1,y=0,yend=1),lty=2)
+ROCplot
+calc_auc(ROCplot)
+```
+An ROC curve was made to help test the validity of the model and help calculate the AUC. The AUC was found to be 0.771 through the calculate AUC function in R. This is a fair AUC, so the data is not too bad.
+
+## 10-Fold CV
+```{r}
+set.seed(1234)
+k=10
+
+data1<-CO2[sample(nrow(CO2)),]
+folds<-cut(seq(1:nrow(CO2)),breaks=k,labels=F)
+
+diags<-NULL
+for(i in 1:k){
+  train<-data1[folds!=i,]
+  test<-data1[folds==i,]
+  truth<-test$y
+  
+  fit2 <- glm(y~uptake+Type, data=train, family="binomial")
+  probs<- predict(fit2, type="response", newdata=test)
+
+diags<-rbind(diags,class_diag(probs,truth))
+}
+
+diags%>%summarize_all(mean)
+```
+After running a 10-fold CV, the average out-of-sample accuracy was 0.653, sensitivity was 0.585, the recall was 0.655, and the AUC was 0.756. All of these are slightly lower compared to the original model's test. 
+
+# Lasso
+```{r}
+set.seed(1234)
+cv.lasso1<-cv.glmnet(x=model.matrix(uptake~.,data=CO2),y=as.matrix(CO2$uptake))
+lasso1<-glmnet(x=model.matrix(uptake~.,data=CO2),y=as.matrix(CO2$uptake),alpha=1,
+               lambda=cv.lasso1$lambda.1se)
+coef(lasso1)
+
+
+set.seed(1234)
+k=10 
+data1<-CO2[sample(nrow(CO2)),]
+folds<-cut(seq(1:nrow(CO2)),breaks=k,labels=F) 
+diags<-NULL
+for(i in 1:k){
+  train<-data1[folds!=i,]
+  test<-data1[folds==i,]
+  fit<-lm(uptake~Type,data=CO2)
+  yhat<-predict(fit,newdata=test)
+  diags<-mean((test$uptake-yhat)^2)
+}
+
+mean(diags)
+```
+A LASSO was ran to try and create a better linear model. The LASSO determined that the Type function was the best to run a regression of uptake with so it was retained. A 10-fold CV was ran on the linear regression, and the Standard Error was found at the end. The standard error was found to be 73.937. This is much higher than the original residual standard error of 6.022 found in the original model. This newly made linear regression is actually a worse fit. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

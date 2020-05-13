@@ -1,0 +1,35 @@
+"0","library(tidyverse)"
+"0","NBAstats <- read.csv(""NBAstats.csv"")"
+"0","NBAadvancedstats <- read.csv(""NBAadvancedstats.csv"")"
+"0","NBAstats <- as.data.frame(NBAstats)"
+"0","NBAadvancedstats <- as.data.frame(NBAadvancedstats)"
+"0","glimpse(NBAstats)"
+"1","Observations: 569
+"
+"1","Variables: 5
+"
+"1","$ FULL.NAME [3m[38;5;246m<fct>[39m[23m Steven Adams, Bam Adebayo, LaMarcus Aldridge, Nickeil Ale…
+"
+"1","$ TEAM      [3m[38;5;246m<fct>[39m[23m Okc, Mia, San, Nor, Mem, Bro, Nyk, Orl, Bro, Mem, Hou, Mi…
+"
+"1","$ POS       [3m[38;5;246m<fct>[39m[23m C, C, F, G, G, C, G, F, F, F, F, F, F, F, F, F, G, F, F, …
+"
+"1","$ PPG       [3m[38;5;246m<dbl>[39m[23m 11.0, 16.1, 18.8, 5.1, 7.4, 10.7, 5.0, 4.3, 1.0, 5.6, 2.5…
+"
+"1","$ RPG       [3m[38;5;246m<dbl>[39m[23m 9.4, 10.5, 7.5, 2.0, 2.2, 9.6, 0.9, 4.9, 0.7, 4.3, 3.5, 1…
+"
+"0","glimpse(NBAadvancedstats)"
+"1","Observations: 569
+"
+"1","Variables: 5
+"
+"1","$ FULL.NAME [3m[38;5;246m<fct>[39m[23m Steven Adams, Bam Adebayo, LaMarcus Aldridge, Nickeil Ale…
+"
+"1","$ TEAM      [3m[38;5;246m<fct>[39m[23m Okc, Mia, San, Nor, Mem, Bro, Nyk, Orl, Bro, Mem, Hou, Mi…
+"
+"1","$ POS       [3m[38;5;246m<fct>[39m[23m C, C, F, G, G, C, G, F, F, F, F, F, F, F, F, F, G, F, F, …
+"
+"1","$ Ortg      [3m[38;5;246m<dbl>[39m[23m 122.6, 117.4, 115.2, 90.7, 110.9, 128.7, 105.7, 87.8, 50.…
+"
+"1","$ DRtg      [3m[38;5;246m<dbl>[39m[23m 102.2, 102.5, 108.9, 107.0, 109.0, 100.1, 111.8, 103.2, 1…
+"

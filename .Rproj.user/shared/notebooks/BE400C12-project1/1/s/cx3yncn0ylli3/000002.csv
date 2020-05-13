@@ -1,0 +1,6 @@
+"0","Stats %>% group_by(POS,TEAM) %>% summarize(PPG = mean(PPG)) %>%"
+"0","  ggplot(aes(POS, PPG)) + geom_bar(fill = ""Light Blue"", stat = ""summary"", fun.y= ""mean"") +"
+"0","  facet_wrap(~TEAM) +"
+"0","  scale_y_continuous(limits = c(0,25), breaks = c(0,12, 25)) +"
+"0","  ggtitle(""PPG of Position Groups on NBA Teams"") +"
+"0","  theme_minimal() + xlab(""Position"") + ylab(""Points per Game"")"

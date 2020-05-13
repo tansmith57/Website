@@ -1,0 +1,2 @@
+"0","Stats %>% group_by(POS,TEAM) %>% summarize(Offensive.Rating = median(Ortg)) %>% "
+"0","  arrange(-Offensive.Rating)"

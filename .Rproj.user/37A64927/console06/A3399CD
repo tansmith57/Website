@@ -1,0 +1,7 @@
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ [K]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ [K]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git --version
+git version 2.17.1
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ cd ~/Desktop/Website
+bash: cd: /stor/home/ts34686/Desktop/Website: No such file or directory
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ 
+]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git init #initialize local git respository
+Initialized empty Git repository in /stor/home/ts34686/Website/.git/

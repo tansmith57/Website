@@ -1,0 +1,2 @@
+"0","Stats %>% mutate(PPGandRPG = PPG+RPG) %>% group_by(POS) %>%"
+"0","  summarize(mean = mean(PPGandRPG), sd=sd(PPGandRPG))"
