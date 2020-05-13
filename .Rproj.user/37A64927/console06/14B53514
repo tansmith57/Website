@@ -1,5 +1,4 @@
-]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ [K]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ cd ~/Desktop/PROJECT_DIRECTORY_NAME[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[KWebsite
-bash: cd: /stor/home/ts34686/Desktop/Website: No such file or directory
+rm -rf *.git
 ]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git init
 Reinitialized existing Git repository in /stor/home/ts34686/Website/.git/
 ]0;/stor/home/ts34686/Website]0;ts34686@educcomp03: ~/Website[01;32mts34686@educcomp03[00m:[01;34m~/Website[00m$ git add .
