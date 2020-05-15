@@ -61,7 +61,7 @@
         </div>
         <div class="blog-title">
           <h4>
-          January 1, 0001
+          May 1, 2020
             &nbsp;&nbsp;
             
           </h4>
@@ -152,7 +152,7 @@ new&lt;-data.frame(uptake=sample(CO2$uptake),Treatment=CO2$Treatment)
 rand_dist[i]&lt;-mean(new[new$Treatment==&quot;chilled&quot;,]$uptake)-
               mean(new[new$Treatment==&quot;nonchilled&quot;,]$uptake)}
 mean(rand_dist&gt;6.859524 | rand_dist&lt; -6.859524)</code></pre>
-<pre><code>## [1] 0.0024</code></pre>
+<pre><code>## [1] 0.0038</code></pre>
 <pre class="r"><code>{hist(rand_dist,main=&quot;&quot;,ylab=&quot;&quot;); abline(v = c(-6.859524,6.859524),col=&quot;red&quot;)}</code></pre>
 <p><img src="../project2_files/figure-html/unnamed-chunk-5-1.png" width="768" style="display: block; margin: auto;" /> The null hypothesis for this test is the difference in mean uptake between the chilled and nonchilled plants will be as extreme as the observed model after the randimization test. The alternative hypothesis states that the difference in means would not be as extreme. After the randimization test was ran, the p-value was found to be 0.0042. This means that only a proportion of 0.0042 had mean differences as extreme as the one observed. The null hypothesis is rejected and the difference in means after the randomization test is not as extreme. The graph above illustrates this result very well with the red lines representing the test statistic.</p>
 </div>
@@ -256,9 +256,9 @@ resid_resamp &lt;- replicate(5000,{
 resid_resamp%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
 <pre><code>## (Intercept) Treatmentchilled conc_c TypeMississippi
 Treatmentchilled:conc_c
-## 1 1.09941 1.269219 0.003712111 1.273091 0.004341208
+## 1 1.081141 1.265303 0.003719795 1.267544 0.004311742
 ## conc_c:TypeMississippi
-## 1 0.00425774</code></pre>
+## 1 0.004366716</code></pre>
 <p>The bootstrapped standard errors are less than original standard errors and robust standard errors. The differences between them aren’t very large, but there is still a difference. the largest standard errors, which is the robust standard errors, might be the safest to use in practice.</p>
 </div>
 <div id="logistic-regression" class="section level1">

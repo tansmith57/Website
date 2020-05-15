@@ -1,0 +1,44 @@
+---
+title: Python
+author: Tanner Smith
+date: '2020-05-15'
+slug: python
+categories: []
+tags: []
+description: ''
+---
+
+
+
+<div class="figure">
+<img src="/blog/2020-05-15-python_files/python.jpeg" />
+
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Python is another coding platform that my computational biology class taught throughout the spring 2020 semester. This blog will show an example of a basic python function and the ability to use python in R.</p>
+</div>
+<div id="basic-python-function" class="section level1">
+<h1>Basic Python Function</h1>
+<pre class="r"><code>library(reticulate)</code></pre>
+<p>This is adding the proper library that allows python to work in R studio.</p>
+<pre class="python"><code>import numpy as np
+np.random.seed( 348 )
+one_D = np.random.randint(1,10,729)
+two_D = one_D.reshape(27,27)
+three_D=two_D.reshape(9,9,9)
+
+np.sum(two_D[6,:9])</code></pre>
+<pre><code>## 55</code></pre>
+<p>This coding chunk, which was done in R studio, shows an example of coding performed in Python using the numpy function. The numpy function has many uses, but this specific use of numpy is used for matrix operations. Three different matrices were created. the “np.sum” function was used to slice specific elements and add them up. “np.sum(two_D[6,:9])” adds up the first nine elements of the seventh row of two_D which equals 55.</p>
+</div>
+<div id="r-and-python-interactive-chunks" class="section level1">
+<h1>R and Python Interactive Chunks</h1>
+<pre class="r"><code>library(reticulate)
+first&lt;- &quot;Tanner&quot;</code></pre>
+<pre class="python"><code>last=&quot;Smith&quot;
+print(r.first,last)</code></pre>
+<pre><code>## Tanner Smith</code></pre>
+<p>These two chunks show an example, while using the reticulate package, of R and python being able to interact. The first code chunk waqs performed using R. The second code chunk is using python. This code chunk also shows that thing defined in R can be shown in the python coding chunk. A “r.” clarification has to be used like it is above. R and Python being interactive prints out my name as the answer in the second code chunk.</p>
+<p>Image URL: <a href="https://medium.com/@umerfarooq_26378/python-for-pdf-ef0fac2808b0" class="uri">https://medium.com/@umerfarooq_26378/python-for-pdf-ef0fac2808b0</a></p>
+</div>
